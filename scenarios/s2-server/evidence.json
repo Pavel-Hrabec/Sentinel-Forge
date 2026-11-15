@@ -1,0 +1,54 @@
+[
+  {
+    "ObservedAt": "2026-11-10T07:16:10.0568737Z",
+    "Scenario": "S2",
+    "Stage": "LOCAL_ADMIN_ADDED",
+    "SourceTable": "SecurityEvent",
+    "Operation": "4732",
+    "Actor": "{{user}}",
+    "Host": "{{server}}",
+    "SourceIp": "",
+    "Target": "Local Administrators",
+    "Details": "{\"ObservedOutcome\":\"4732\",\"ObservedSignal\":\"Local group membership changed\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T08:11:23.5580487Z",
+    "Scenario": "S2",
+    "Stage": "LSASS_ACCESS",
+    "SourceTable": "Event",
+    "Operation": "Sysmon 10",
+    "Actor": "{{user}}",
+    "Host": "{{server}}",
+    "SourceIp": "",
+    "Target": "lsass.exe",
+    "Details": "{\"ObservedOutcome\":\"10\",\"ObservedSignal\":\"Microsoft-Windows-Sysmon/Operational\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T07:25:40.1605998Z",
+    "Scenario": "S2",
+    "Stage": "SERVICE_INSTALL",
+    "SourceTable": "Event",
+    "Operation": "7045",
+    "Actor": "{{user}}",
+    "Host": "{{server}}",
+    "SourceIp": "",
+    "Target": "demo-cachedump-decoy",
+    "Details": "{\"ObservedOutcome\":\"7045\",\"ObservedSignal\":\"Service Control Manager\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T07:31:26.7200619Z",
+    "Scenario": "S2",
+    "Stage": "SECURITY_LOG_CLEARED",
+    "SourceTable": "SecurityEvent",
+    "Operation": "1102",
+    "Actor": "{{user}}",
+    "Host": "{{server}}",
+    "SourceIp": "",
+    "Target": "Security log",
+    "Details": "{\"ObservedOutcome\":\"1102\",\"ObservedSignal\":\"Microsoft-Windows-Eventlog\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  }
+]

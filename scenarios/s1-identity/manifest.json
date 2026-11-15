@@ -1,0 +1,18 @@
+{
+  "id": "S1",
+  "group": "S1",
+  "name": "INCIDENT-LAB S1 - identity, consent and mail forwarding (synthetic)",
+  "description": "S1: MFA denials, risky sign-in, app consent, mailbox forwarding and PIM assignment. One isolated synthetic incident; no live Entra or Exchange actions.",
+  "tableName": "IncidentLabS1_CL",
+  "ruleId": "f20dd571-9114-44b5-8cca-202611150001",
+  "severity": "High",
+  "evidenceFile": "evidence.json",
+  "queryFile": "detection.kql",
+  "requiredStages": {
+    "MFA_REJECTED": 3,
+    "RISKY_SIGNIN": 1,
+    "APP_CONSENT": 1,
+    "MAIL_FORWARD": 1,
+    "PIM_ASSIGNMENT": 1
+  }
+}

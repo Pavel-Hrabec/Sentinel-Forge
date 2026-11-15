@@ -1,0 +1,93 @@
+[
+  {
+    "ObservedAt": "2026-11-10T13:07:42.4476472Z",
+    "Scenario": "S1",
+    "Stage": "MFA_REJECTED",
+    "SourceTable": "SigninLogs",
+    "Operation": "User sign-in",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{mfaAttackIp}}",
+    "Target": "{{user}}",
+    "Details": "{\"ObservedOutcome\":\"500121\",\"ObservedSignal\":\"multiFactorAuthentication\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T13:07:42.4476413Z",
+    "Scenario": "S1",
+    "Stage": "MFA_REJECTED",
+    "SourceTable": "SigninLogs",
+    "Operation": "User sign-in",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{mfaAttackIp}}",
+    "Target": "{{user}}",
+    "Details": "{\"ObservedOutcome\":\"500121\",\"ObservedSignal\":\"multiFactorAuthentication\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T12:56:12.827491Z",
+    "Scenario": "S1",
+    "Stage": "MFA_REJECTED",
+    "SourceTable": "SigninLogs",
+    "Operation": "User sign-in",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{mfaAttackIp}}",
+    "Target": "{{user}}",
+    "Details": "{\"ObservedOutcome\":\"500121\",\"ObservedSignal\":\"multiFactorAuthentication\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T23:46:15.0855433Z",
+    "Scenario": "S1",
+    "Stage": "RISKY_SIGNIN",
+    "SourceTable": "SigninLogs",
+    "Operation": "User sign-in",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{riskyAttackIp}}",
+    "Target": "{{user}}",
+    "Details": "{\"ObservedOutcome\":\"0\",\"ObservedSignal\":\"medium\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T12:55:52.2980347Z",
+    "Scenario": "S1",
+    "Stage": "APP_CONSENT",
+    "SourceTable": "AuditLogs",
+    "Operation": "Add delegated permission grant",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{redactedLegitimateIp}}",
+    "Target": "demo-mail-app",
+    "Details": "{\"ObservedOutcome\":\"success\",\"ObservedSignal\":\"Add delegated permission grant\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-10T13:06:44Z",
+    "Scenario": "S1",
+    "Stage": "MAIL_FORWARD",
+    "SourceTable": "OfficeActivity",
+    "Operation": "UpdateInboxRules",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{redactedLegitimateIp}}",
+    "Target": "{{mailSink}}",
+    "Details": "{\"ObservedOutcome\":\"Succeeded\",\"ObservedSignal\":\"UpdateInboxRules\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  },
+  {
+    "ObservedAt": "2026-11-09T16:03:08.429683Z",
+    "Scenario": "S1",
+    "Stage": "PIM_ASSIGNMENT",
+    "SourceTable": "AuditLogs",
+    "Operation": "Add member to role in PIM completed (timebound)",
+    "Actor": "{{user}}",
+    "Host": "{{workstation}}",
+    "SourceIp": "{{redactedLegitimateIp}}",
+    "Target": "Security Administrator",
+    "Details": "{\"ObservedOutcome\":\"success\",\"ObservedSignal\":\"Add member to role in PIM completed (timebound)\",\"EvidenceKind\":\"Sanitized fields from observed DEV log row\"}",
+    "IsSynthetic": true
+  }
+]

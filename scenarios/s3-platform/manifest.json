@@ -1,0 +1,18 @@
+{
+  "id": "S3",
+  "group": "S3",
+  "name": "INCIDENT-LAB S3 - pipeline, vault and AKS (synthetic)",
+  "description": "S3: PAT use, app secret, Container App change, Key Vault reads and AKS pod exec. Does not create native Defender for Containers alerts.",
+  "tableName": "IncidentLabS3_CL",
+  "ruleId": "f20dd571-9114-44b5-8cca-202611150003",
+  "severity": "High",
+  "evidenceFile": "evidence.json",
+  "queryFile": "detection.kql",
+  "requiredStages": {
+    "PAT_USED": 1,
+    "SP_SECRET_ADDED": 1,
+    "CONTAINER_APP_WRITE": 1,
+    "KEYVAULT_READ_BURST": 20,
+    "AKS_POD_EXEC": 1
+  }
+}

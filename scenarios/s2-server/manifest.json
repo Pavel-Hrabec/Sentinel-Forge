@@ -1,0 +1,16 @@
+{
+  "id": "S2",
+  "group": "S2",
+  "name": "INCIDENT-LAB S2 - LSASS and audit tampering (synthetic)",
+  "description": "S2: local admin change, LSASS access, suspicious service and Security log clear. Event 1102 does not prove Event Log service stopped.",
+  "tableName": "IncidentLabS2_CL",
+  "ruleId": "f20dd571-9114-44b5-8cca-202611150002",
+  "severity": "High",
+  "evidenceFile": "evidence.json",
+  "queryFile": "detection.kql",
+  "requiredStages": {
+    "LSASS_ACCESS": 1,
+    "SERVICE_INSTALL": 1,
+    "SECURITY_LOG_CLEARED": 1
+  }
+}

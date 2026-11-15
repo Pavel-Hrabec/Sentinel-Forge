@@ -1,0 +1,6 @@
+IncidentLabS2_CL
+| where TimeGenerated > ago(1h) and ingestion_time() > ago(20m)
+| where IsSynthetic == true and Scenario == 'S2'
+| summarize StartTime=min(TimeGenerated), EndTime=max(TimeGenerated), Stages=make_set(Stage), Actor=take_any(Actor), Host=take_any(Host), SourceIp=take_any(SourceIp) by RunId
+| where set_has_element(Stages, 'LSASS_ACCESS') and set_has_element(Stages, 'SERVICE_INSTALL') and set_has_element(Stages, 'SECURITY_LOG_CLEARED')
+| project TimeGenerated=EndTime, StartTime, EndTime, RunId, Stages, Actor, Host, SourceIp

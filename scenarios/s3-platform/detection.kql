@@ -1,0 +1,7 @@
+IncidentLabS3_CL
+| where TimeGenerated > ago(1h) and ingestion_time() > ago(20m)
+| where IsSynthetic == true and Scenario == 'S3'
+| summarize StartTime=min(TimeGenerated), EndTime=max(TimeGenerated), Stages=make_set(Stage), VaultReads=countif(Stage == 'KEYVAULT_READ_BURST'), PatIps=make_set_if(SourceIp, Stage == 'PAT_USED'), Actor=take_any(Actor), Host=take_any(Host) by RunId
+| where VaultReads >= 20 and set_has_element(Stages, 'PAT_USED') and set_has_element(Stages, 'SP_SECRET_ADDED') and set_has_element(Stages, 'CONTAINER_APP_WRITE') and set_has_element(Stages, 'AKS_POD_EXEC')
+| extend SourceIp=tostring(PatIps[0])
+| project TimeGenerated=EndTime, StartTime, EndTime, RunId, Stages, VaultReads, PatIps, Actor, Host, SourceIp

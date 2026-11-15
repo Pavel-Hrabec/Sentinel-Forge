@@ -1,0 +1,20 @@
+{
+  "subscriptionId": "<subscription-id>",
+  "tenantId": "<tenant-id>",
+  "resourceGroup": "<existing-workspace-resource-group>",
+  "workspaceName": "<existing-sentinel-workspace>",
+  "workspaceCustomerId": "<workspace-customer-id>",
+  "dceName": "sentinel-incident-lab-dce",
+  "entities": {
+    "user": "martina.svobodova@example.invalid",
+    "workstation": "claims-ws-17.example.invalid",
+    "server": "claims-core-02.example.invalid",
+    "cluster": "demo-aks.example.invalid",
+    "mfaAttackIp": "203.0.113.10",
+    "riskyAttackIp": "203.0.113.11",
+    "patAttackIp": "203.0.113.12",
+    "redactedLegitimateIp": "198.51.100.28",
+    "mailSink": "mail-sink@example.invalid"
+  },
+  "blockedLocalIps": []
+}

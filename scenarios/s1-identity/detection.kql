@@ -1,0 +1,7 @@
+IncidentLabS1_CL
+| where TimeGenerated > ago(1h) and ingestion_time() > ago(20m)
+| where IsSynthetic == true and Scenario == 'S1'
+| summarize StartTime=min(TimeGenerated), EndTime=max(TimeGenerated), Stages=make_set(Stage), MfaDenials=countif(Stage == 'MFA_REJECTED'), AttackIps=make_set_if(SourceIp, Stage in ('MFA_REJECTED', 'RISKY_SIGNIN')), Actor=take_any(Actor), Host=take_any(Host) by RunId
+| where MfaDenials >= 3 and set_has_element(Stages, 'RISKY_SIGNIN') and set_has_element(Stages, 'APP_CONSENT') and set_has_element(Stages, 'MAIL_FORWARD') and set_has_element(Stages, 'PIM_ASSIGNMENT')
+| extend SourceIp=tostring(AttackIps[0])
+| project TimeGenerated=EndTime, StartTime, EndTime, RunId, Stages, MfaDenials, AttackIps, Actor, Host, SourceIp
