@@ -22,9 +22,16 @@ Replay assigns new identities, timestamps and a `RunId`, then sends these **synt
 
 Each existing lab scenario has one table, one DCR, and one stable scheduled rule. A shared DCE serves all three. Selecting one rule replays only its records; selecting several replays those groups with a common `RunId` while keeping each incident separate. The alert and incident titles include that ID. We do **not** create one table or rule per run. All records are marked `IsSynthetic=true` and retain `SourceTable` only as a description of the original source represented. They are not written into those native tables. No additional detections are bundled.
 
-## Start
+## Prerequisites
 
-Requirements: PowerShell 7, Azure CLI with Bicep, an **existing** Sentinel-enabled Log Analytics workspace, permission to create custom tables/DCE/DCR/Sentinel rules, and permission to assign `Monitoring Metrics Publisher` on each DCR. The template does not create a workspace. In this development project, the local ignored configuration targets the existing `DEV-Security-Monitoring` workspace.
+1. Install [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) (`pwsh`) and [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli). Check them with `pwsh --version` and `az version`. Check Bicep with `az bicep version`; if it is missing, run `az bicep install`. The script requires PowerShell 7 and uses Azure CLI for deployment, authentication, and Log Analytics queries.
+2. Have an **existing Log Analytics workspace with Microsoft Sentinel enabled**. In the Azure portal, open Microsoft Sentinel and add it to your existing workspace if needed; follow [Microsoft's onboarding guide](https://learn.microsoft.com/en-us/azure/sentinel/quickstart-onboard). This tool never creates a workspace. You do not need Entra, Exchange, Windows, DevOps, AKS, or Defender data connectors for the synthetic replay.
+3. Use an Azure identity that can manage a custom table in that workspace, create a DCE and DCR in its resource group, create Sentinel analytics rules, and assign a role on each DCR. Relevant built-in roles are Log Analytics Contributor on the workspace, Contributor on the resource group for DCE/DCR deployment, Microsoft Sentinel Contributor for rules, and User Access Administrator or Role Based Access Control Administrator for the DCR role assignment. Equivalent custom permissions also work. The deployment assigns the signed-in ingestor **Monitoring Metrics Publisher** on each DCR; you need query/incident read access for verification. The default interactive path uses your Azure CLI sign-in and does not need a separate app registration. See [table permissions](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/create-custom-table), [Sentinel roles](https://learn.microsoft.com/en-us/azure/sentinel/roles), and [Logs Ingestion API permissions](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-ingestion-api-overview).
+4. Allow HTTPS access to Azure sign-in, management, Log Analytics query, and the DCE's Logs Ingestion endpoint. Expect small ingestion/retention charges and enabled scheduled rules after deployment.
+
+## First run
+
+The template does not create a workspace. In this development project, the local ignored configuration targets the existing `DEV-Security-Monitoring` workspace. For your own workspace, fill in `config.json` with its subscription ID, tenant ID, resource group, name, and **workspace customer ID**. In the Azure portal the customer ID is the workspace ID on the workspace Overview; you can also retrieve it with `az monitor log-analytics workspace show -g <resource-group> -n <workspace-name> --query customerId -o tsv`.
 
 On your own machine:
 
@@ -49,15 +56,17 @@ Select `1`, `1,3`, `1-3`, `S1,S3`, or `All`; the menu shows each rule's name and
 
 Menu actions are **Preview and validate**, **Deploy only**, **Replay only**, **Deploy and replay**, and **Verify an earlier RunId**. Deployment creates the shared DCE once and then, per scenario, the table/DCR/RBAC and rule in two phases so the table can become queryable. Replay sends the bundled records via the Azure Monitor Logs Ingestion API. Verification waits for both the expected row count and an incident whose title contains the RunId. It prints the incident number and link. The script checks subscription, tenant, workspace ARM ID, and customer ID before any Azure write.
 
+On a first deployment, Azure resource creation, initial table ingestion, five-minute rule scheduling, and incident synchronization can take several minutes. Use `-WaitMinutes 30` for an unattended first run. Subsequent replays skip healthy deployments, but each selected scenario must be outside its 20-minute alert suppression window. An accepted ingestion POST is not proof of an incident: the script checks both table rows and incident records.
+
 Noninteractive examples:
 
 ```powershell
 pwsh -NoProfile -File .\Start-IncidentLab.ps1 -Action Validate -Scenario S1
-pwsh -NoProfile -File .\Start-IncidentLab.ps1 -Action All -Scenario 'S1,S3'
+pwsh -NoProfile -File .\Start-IncidentLab.ps1 -Action All -Scenario 'S1,S3' -WaitMinutes 30
 pwsh -NoProfile -File .\Start-IncidentLab.ps1 -Action Verify -Scenario S1 -RunId <guid>
 ```
 
-`-Action All` deploys if needed, replays and verifies. `-Action Deploy` changes Azure resources without sending logs. `-Action Replay` requires a previous deployment. `-ForceDeploy` reapplies an edited table, DCR or rule; normal runs skip existing resources. `-PrincipalId <object-id> -PrincipalType ServicePrincipal` can designate a service principal as ingestor. `-WaitMinutes 0` sends data without waiting. A preflight check blocks a second replay within the 20-minute rule suppression window, avoiding billable rows with no new incident.
+`-Action All` deploys if needed, replays and verifies. `-Action Deploy` changes Azure resources without sending logs. `-Action Replay` requires a previous deployment. `-ForceDeploy` reapplies an edited table, DCR or rule; normal runs skip existing resources. For a service-principal login, use `-PrincipalId <object-id> -PrincipalType ServicePrincipal` and ensure the Azure CLI is signed in as that same principal. `-WaitMinutes 0` sends data without waiting. A preflight check blocks a second replay within the 20-minute rule suppression window, avoiding billable rows with no new incident.
 
 To inspect one incident's evidence, replace the table and RunId:
 
@@ -78,3 +87,5 @@ Rule changes require `-Action Deploy -ForceDeploy`. Do not change a pack's table
 ## Cost and safety
 
 This lab uses the **existing** workspace only. Analytics table ingestion/retention and Sentinel scheduled rules may incur charges. Each full replay sends 79 small records. The rules run every five minutes and remain enabled until disabled in Sentinel. Keep this in a development environment. Never delete the entire resource group to remove this project: it contains the pre-existing workspace and unrelated resources.
+
+The bundled S1, S2, and S3 path was tested end to end in an existing DEV Sentinel workspace on 15 November 2026: 7, 4, and 68 rows arrived; all three scheduled rules created separate incidents with one alert each; the blocked local IP appeared in zero replay rows. Your incident numbers will differ.
